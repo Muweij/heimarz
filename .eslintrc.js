@@ -230,7 +230,7 @@ module.exports = {
       }
     ],
     'space-before-blocks': [2, 'always'],
-    'space-before-function-paren': [2, 'never'],
+    'space-before-function-paren': [0, 'never'],
     'space-in-parens': [2, 'never'],
     'space-infix-ops': 2,
     'space-unary-ops': [
@@ -244,7 +244,15 @@ module.exports = {
       2,
       'always',
       {
-        markers: ['global', 'globals', 'eslint', 'eslint-disable', '*package', '!', ',']
+        markers: [
+          'global',
+          'globals',
+          'eslint',
+          'eslint-disable',
+          '*package',
+          '!',
+          ','
+        ]
       }
     ],
     'template-curly-spacing': [2, 'never'],
@@ -262,7 +270,6 @@ module.exports = {
         objectsInObjects: false
       }
     ],
-    'array-bracket-spacing': [2, 'never'],
-    'space-before-function-paren': 0
+    'array-bracket-spacing': [2, 'never']
   }
 }
