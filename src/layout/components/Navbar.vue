@@ -14,8 +14,9 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar + '?imageView2/1/w/80/h/80'" class="user-avatar" />
-          <i class="el-icon-caret-bottom" />
+          <img v-imgerror="defaultImg" :src="staffPhoto" class="user-avatar" />
+          <span class="name">{{ name }}</span>
+          <i class="el-icon-caret-bottom" style="color:#fff" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
@@ -27,7 +28,7 @@
             <el-dropdown-item>项目地址</el-dropdown-item>
           </a>
           <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">退出登录</span>
+            <span v-textcolor="'red'" style="display:block;">退出登录</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -36,29 +37,54 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import Hamburger from '@/components/Hamburger'
-
+import defaultUserImg from '@/assets/common/bigUserHeader.png'
+import { imgerror, textcolor } from '@/directives'
 export default {
+  data() {
+    return {
+      defaultImg: defaultUserImg
+    }
+  },
+  directives: {
+    textcolor,
+    imgerror
+  },
   components: {
     Hamburger
   },
   computed: {
-    ...mapGetters(['sidebar', 'avatar'])
+    ...mapGetters(['sidebar', 'avatar', 'name', 'staffPhoto'])
   },
   methods: {
+    ...mapActions('user', ['getUserInfo']),
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
-    },
-    async logout() {
-      await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     }
+  },
+  created() {
+    this.getUserInfo()
   }
 }
 </script>
 
 <style lang="scss" scoped>
+.user-avatar {
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  vertical-align: middle;
+}
+.name {
+  color: #fff;
+  vertical-align: middle;
+  margin-left: 5px;
+}
+.user-dropdown {
+  color: #fff;
+}
 .app-breadcrumb {
   display: inline-block;
   font-size: 18px;

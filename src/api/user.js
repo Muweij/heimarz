@@ -14,3 +14,9 @@ export function getUserInfo() {
     method: 'post'
   })
 }
+//获取员工基本信息
+export function getStaffInfo(id) {
+  return request({
+    url: `/sys/user/${id}`
+  })
+}

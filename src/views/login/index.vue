@@ -85,18 +85,17 @@ export default {
           {
             required: true,
             trigger: ['change', 'blur'],
-            validator: validateMobile
+            message: '手机号不能为空'
           },
           {
-            pattern: /^1[3-9]\d{9}$/,
-            message: '请输入正确的手机号',
-            trigger: ['change', 'blur']
+            validator: validateMobile
           }
         ],
         password: [
           {
             required: true,
-            trigger: ['change', 'blur']
+            trigger: ['change', 'blur'],
+            message: '密码不能为空'
           },
           {
             min: 6,
