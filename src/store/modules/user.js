@@ -1,5 +1,5 @@
 import { getUserInfo, login, getStaffInfo } from '@/api/user'
-import { getToken, setToken } from '@/utils/auth'
+import { getToken, setToken, removeToken } from '@/utils/auth'
 const state = {
   token: getToken() || '',
   userInfo: {}
@@ -11,6 +11,13 @@ const mutations = {
   },
   setUserInfo(state, newUserInfo) {
     state.userInfo = newUserInfo
+  },
+  removeToken(state) {
+    state.token = ''
+    removeToken()
+  },
+  removeUserInfo(state) {
+    state.userInfo = {}
   }
 }
 const actions = {
@@ -19,19 +26,6 @@ const actions = {
     commit('setToken', data)
     return data
   },
-  // getToken({ commit }, data) {
-  //   return new Promise((resolve, reject) => {
-  //     login(data)
-  //       .then(res => {
-  //         resolve()
-  //         commit('setToken', res.data)
-  //       })
-  //       .catch(err => {
-  //         reject()
-  //         console.log(err)
-  //       })
-  //   })
-  // },
   async getUserInfo({ commit }) {
     let { data: data1 } = await getUserInfo()
     let { data: data2 } = await getStaffInfo(data1.userId)
@@ -41,21 +35,11 @@ const actions = {
     }
     commit('setUserInfo', obj)
     return obj
+  },
+  logout({ commit }) {
+    commit('removeToken')
+    commit('removeUserInfo')
   }
-  // getUserInfo({ commit }) {
-  //   return new Promise((resolve, reject) => {
-  //     getUserInfo()
-  //       .then(res => {
-  //         let { data } = res
-  //         commit('setUserInfo', data)
-  //         resolve()
-  //       })
-  //       .catch(err => {
-  //         reject()
-  //         console.log(err)
-  //       })
-  //   })
-  // }
 }
 const getters = {}
 

@@ -39,12 +39,13 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import Hamburger from '@/components/Hamburger'
-import defaultUserImg from '@/assets/common/bigUserHeader.png'
+import defaultImg from '@/assets/common/bigUserHeader.png'
 import { imgerror, textcolor } from '@/directives'
+// import store from '@/store'
 export default {
   data() {
     return {
-      defaultImg: defaultUserImg
+      defaultImg
     }
   },
   directives: {
@@ -55,16 +56,14 @@ export default {
     Hamburger
   },
   computed: {
-    ...mapGetters(['sidebar', 'avatar', 'name', 'staffPhoto'])
+    ...mapGetters(['sidebar', 'name', 'staffPhoto'])
   },
   methods: {
-    ...mapActions('user', ['getUserInfo']),
-    toggleSideBar() {
-      this.$store.dispatch('app/toggleSideBar')
+    ...mapActions('app', ['toggleSideBar']),
+    logout() {
+      this.$store.dispatch('user/logout')
+      this.$router.push('/login')
     }
-  },
-  created() {
-    this.getUserInfo()
   }
 }
 </script>
