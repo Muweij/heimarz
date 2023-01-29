@@ -20,3 +20,8 @@ export function getStaffInfo(id) {
     url: `/sys/user/${id}`
   })
 }
+export function getSimpleList() {
+  return request({
+    url: `/sys/user/simple`
+  })
+}

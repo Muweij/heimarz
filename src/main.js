@@ -2,7 +2,6 @@ import Vue from 'vue'
 import 'normalize.css/normalize.css'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import locale from 'element-ui/lib/locale/lang/en'
 import '@/styles/index.scss'
 import App from './App'
 import store from './store'
@@ -10,10 +9,17 @@ import router from './router'
 import '@/icons'
 import '@/permission'
 import * as directiveObj from '@/directives'
+import * as filter from '@/filter'
+import components from './components'
+
 for (let key in directiveObj) {
   Vue.directive(key, directiveObj[key])
 }
-Vue.use(ElementUI, { locale })
+for (let key in filter) {
+  Vue.filter(key, filter[key])
+}
+Vue.use(ElementUI)
+Vue.use(components)
 Vue.config.productionTip = false
 
 new Vue({

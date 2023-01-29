@@ -23,7 +23,7 @@ module.exports = {
     proxy: {
       '/api': {
         target: 'http://ihrm.itheima.net'
-        // pathRewrite: { '^/api': '' }
+        // target: 'https://ihrm.api.iuiun'
       }
     },
     open: true,

@@ -22,22 +22,41 @@ request.interceptors.request.use(
 // 添加响应拦截器
 request.interceptors.response.use(
   function(response) {
-    const res = response.data
-    const { message, success } = res
+    const {
+      data: { success, message }
+    } = response
     if (!success) {
       Message.error(message)
       return Promise.reject(new Error(message))
     }
-    return res
+    return response.data
   },
   function(error) {
-    if (error.response.status === 401 && error.response.data.code === 1002) {
+    if (error.response.status === 401 && error.response.data.code === 10002) {
       Message.error('都一个小时候，你还在浏览网页？滚登录页面吧！！（狗头）')
       store.dispatch('user/logout')
       router.push('/login')
     } else {
       Message.error('请求出错')
     }
+    console.log(error)
+    // const {
+    //   response: {
+    //     status,
+    //     data: { message }
+    //   }
+    // } = error
+
+    // Message({
+    //   showClose: true,
+    //   message,
+    //   type: 'error'
+    // })
+
+    // if (status === 401) {
+    //   store.dispatch('user/logout')
+    //   router.push('/login')
+    // }
     return Promise.reject(error)
   }
 )

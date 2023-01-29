@@ -10,13 +10,13 @@ import settingRouter from './modules/setting.js'
 import socialRouter from './modules/social.js'
 Vue.use(VueRouter)
 export const asyncRoutes = [
-  approvalsRouter,
   departmentsRouter,
+  settingRouter,
   employeesRouter,
   permissionRouter,
+  approvalsRouter,
   attendancesRouter,
   salarysRouter,
-  settingRouter,
   socialRouter
 ]
 /* Layout */
@@ -27,7 +27,6 @@ export const constantRoutes = [
     component: () => import('@/views/login/index'),
     hidden: true
   },
-
   {
     path: '/404',
     component: () => import('@/views/404'),
@@ -47,8 +46,18 @@ export const constantRoutes = [
       }
     ]
   },
-
-  // 404 page must be placed at the end !!!
+  {
+    path: '/import',
+    component: Layout,
+    children: [
+      {
+        path: '',
+        component: () => import('@/views/import/index'),
+        meta: { title: 'excel上传' }
+      }
+    ],
+    hidden: true
+  },
   { path: '*', redirect: '/404', hidden: true }
 ]
 
