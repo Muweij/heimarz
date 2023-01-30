@@ -1,6 +1,5 @@
 <template>
-  <el-dialog :title="showTitle" :visible.sync="dialogVisible" width="30%" @open="handleopen"
-    :before-close="handleClose">
+  <el-dialog :title="showTitle" :visible="dialogVisible" width="30%" @open="handleopen" :before-close="handleClose">
     <el-form ref="deptForm" :model="form" :rules="rules" label-width="120px">
       <el-form-item label="部门名称" prop="name">
         <el-input v-model="form.name" style="width:80%" placeholder="1-50个字符" />
@@ -56,6 +55,7 @@ export default {
   data() {
     let checkNameRepeat = (rule, value, callback) => {
       let arr = []
+      console.log(this.form)
       if (this.form.id) {
         if (this.objnode.name === value) {
           callback()

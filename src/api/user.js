@@ -20,6 +20,7 @@ export function getStaffInfo(id) {
     url: `/sys/user/${id}`
   })
 }
+//获取部门负责人
 export function getSimpleList() {
   return request({
     url: `/sys/user/simple`

@@ -1,10 +1,6 @@
 <template>
   <div class="navbar">
-    <hamburger
-      :is-active="sidebar.opened"
-      class="hamburger-container"
-      @toggleClick="toggleSideBar"
-    />
+    <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
     <!-- <breadcrumb class="breadcrumb-container" /> -->
     <div class="app-breadcrumb">
@@ -37,11 +33,10 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 import Hamburger from '@/components/Hamburger'
 import defaultImg from '@/assets/common/bigUserHeader.png'
 import { imgerror, textcolor } from '@/directives'
-// import store from '@/store'
 export default {
   data() {
     return {
@@ -57,9 +52,12 @@ export default {
   },
   computed: {
     ...mapGetters(['sidebar', 'name', 'staffPhoto'])
+
   },
   methods: {
-    ...mapActions('app', ['toggleSideBar']),
+    toggleSideBar() {
+      this.$store.dispatch('app/toggleSideBar')
+    },
     logout() {
       this.$store.dispatch('user/logout')
       this.$router.push('/login')
@@ -76,14 +74,17 @@ export default {
   border-radius: 15px;
   vertical-align: middle;
 }
+
 .name {
   color: #fff;
   vertical-align: middle;
   margin-left: 5px;
 }
+
 .user-dropdown {
   color: #fff;
 }
+
 .app-breadcrumb {
   display: inline-block;
   font-size: 18px;
@@ -91,6 +92,7 @@ export default {
   margin-left: 10px;
   color: #ffffff;
   cursor: text;
+
   .breadBtn {
     background: #84a9fe;
     font-size: 14px;
@@ -102,6 +104,7 @@ export default {
     margin-left: 15px;
   }
 }
+
 .navbar {
   height: 50px;
   overflow: hidden;

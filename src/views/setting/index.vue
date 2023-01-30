@@ -170,14 +170,12 @@ export default {
         this.closeDialog()
         this.getRole()
       })
-
     },
     async editRoleDetails(id) {
       this.showTitle = '编辑角色'
       this.dialogVisible = true
       let { data } = await getdelRole(id)
       this.form = data
-
     }
   }
 }
