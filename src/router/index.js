@@ -8,9 +8,11 @@ import attendancesRouter from './modules/attendances.js'
 import salarysRouter from './modules/salarys.js'
 import settingRouter from './modules/setting.js'
 import socialRouter from './modules/social.js'
+import zijixieRouter from './modules/zijixie.js'
 Vue.use(VueRouter)
 export const asyncRoutes = [
   departmentsRouter,
+  zijixieRouter,
   settingRouter,
   employeesRouter,
   permissionRouter,

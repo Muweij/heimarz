@@ -28,3 +28,34 @@ export const batchUserListApi = data =>
     method: 'post',
     data
   })
+// 修改员工基本信息
+export const appUserListApi = data =>
+  request({
+    url: `/sys/user/${data.id}`,
+    method: 'put',
+    data
+  })
+// 获取员工个人信息
+export const reqGetPersonalDetail = id =>
+  request({
+    url: `/employees/${id}/personalInfo`
+  })
+//更新员工的基础信息
+export const reqUpdataPersonal = data =>
+  request({
+    url: `/employees/${data.userId}/personalInfo`,
+    method: 'put',
+    data
+  })
+// 获取用户岗位信息
+export const reqGetJobDetail = id =>
+  request({
+    url: `/employees/${id}/jobs`
+  })
+// 更新岗位信息
+export const reqUodataJob = data =>
+  request({
+    url: `/employees/${data.userId}/jobs`,
+    method: 'put',
+    data
+  })
