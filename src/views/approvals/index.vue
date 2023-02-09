@@ -22,7 +22,7 @@
           <el-table-column label="审批发起时间" prop="procApplyTime" sortable>
             <template slot-scope="scope">
               <span>
-                {{ scope.row.procApplyTime | formatTime }}
+                {{ scope.row.procApplyTime | formatTime('YYYY年MM月DD日') }}
               </span>
             </template>
           </el-table-column>
@@ -46,8 +46,10 @@
             </template>
           </el-table-column>
           <el-table-column label="操作" sortable="" fixed="right" width="280">
-            <template #default>
-              <el-button type="text" size="small">查看</el-button>
+            <template slot-scope="scope">
+              <el-button type="text" size="small" @click="pushdao(scope.row)"
+                >查看</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -92,7 +94,37 @@ export default {
       this.page.total = data.total
     },
     handleSizeChange() {},
-    currentChange() {}
+    currentChange() {},
+    pushdao(obj) {
+      let processName = obj.processName
+      switch (processName) {
+        case '工资':
+          this.$router.push({
+            path: '/approvals/salaryApproval/' + obj.processId
+          })
+          break
+        case '入职':
+          this.$router.push({
+            path: '/approvals/enterApproval/' + obj.processId
+          })
+          break
+        case '请假':
+          this.$router.push({
+            path: '/approvals/leaveApproval/' + obj.processId
+          })
+          break
+        case '离职':
+          this.$router.push({
+            path: '/approvals/quitApproval/' + obj.processId
+          })
+          break
+        case '加班':
+          this.$router.push({
+            path: '/approvals/overtimeApproval/' + obj.processId
+          })
+      }
+      // $router.push(`approvals/leaveApproval/${scope.row.id}`)
+    }
   }
 }
 </script>

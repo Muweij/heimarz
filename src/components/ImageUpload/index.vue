@@ -36,10 +36,7 @@
 
 <script>
 import COS from 'cos-js-sdk-v5'
-const cos = new COS({
-  SecretId: 'AKIDLZlsoaFzZyDQUPBtJer2JPJ3lIE2hCWc',
-  SecretKey: '3tWyPl03xiFcu33sXDnDkAZvBNbiiiaI'
-})
+const cos = new COS({})
 export default {
   props: {
     limitNum: {
