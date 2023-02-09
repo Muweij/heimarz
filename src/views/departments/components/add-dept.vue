@@ -1,20 +1,49 @@
 <template>
-  <el-dialog :title="showTitle" :visible="dialogVisible" width="30%" @open="handleopen" :before-close="handleClose">
+  <el-dialog
+    :title="showTitle"
+    :visible="dialogVisible"
+    width="30%"
+    @open="handleopen"
+    :before-close="handleClose"
+  >
     <el-form ref="deptForm" :model="form" :rules="rules" label-width="120px">
       <el-form-item label="部门名称" prop="name">
-        <el-input v-model="form.name" style="width:80%" placeholder="1-50个字符" />
+        <el-input
+          v-model="form.name"
+          style="width:80%"
+          placeholder="1-50个字符"
+        />
       </el-form-item>
       <el-form-item label="部门编码" prop="code">
-        <el-input v-model="form.code" style="width:80%" placeholder="1-50个字符" />
+        <el-input
+          v-model="form.code"
+          style="width:80%"
+          placeholder="1-50个字符"
+        />
       </el-form-item>
       <el-form-item label="部门负责人" prop="manager">
-        <el-select v-model="form.manager" style="width:80%" placeholder="请选择">
-          <el-option v-for="item in userList" :key="item.id" :label="item.username" :value="item.username">
+        <el-select
+          v-model="form.manager"
+          style="width:80%"
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="item in userList"
+            :key="item.id"
+            :label="item.username"
+            :value="item.username"
+          >
           </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="部门介绍" prop="introduce">
-        <el-input v-model="form.introduce" style="width:80%" placeholder="1-300个字符" type="textarea" :rows="3" />
+        <el-input
+          v-model="form.introduce"
+          style="width:80%"
+          placeholder="1-300个字符"
+          type="textarea"
+          :rows="3"
+        />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -55,19 +84,18 @@ export default {
   data() {
     let checkNameRepeat = (rule, value, callback) => {
       let arr = []
-      console.log(this.form)
       if (this.form.id) {
         if (this.objnode.name === value) {
           callback()
           return
         }
-        arr = this.origindeparts.filter(item => this.objnode.pid === item.pid)
+        arr = this.origindeparts.filter(item => item.pid === this.objnode.pid)
       } else {
-        arr = this.origindeparts.filter(item => this.objnode.id === item.pid)
+        arr = this.origindeparts.filter(item => item.pid === this.objnode.id)
       }
       let isRepeast = arr.some(item => item.name === value)
       if (isRepeast) {
-        callback(new Error('出现了同名的部门'))
+        callback(new Error('出现相同部门'))
       } else {
         callback()
       }
@@ -79,7 +107,7 @@ export default {
       }
       let isRepeast = this.origindeparts.some(item => item.code === value)
       if (isRepeast) {
-        callback(new Error('出现了同名的部门编码'))
+        callback(new Error('出现相同部门编码'))
       } else {
         callback()
       }
@@ -193,6 +221,4 @@ export default {
 }
 </script>
 
-<style>
-
-</style>
+<style></style>

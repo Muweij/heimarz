@@ -10,6 +10,7 @@
       <div :class="{ 'fixed-header': fixedHeader }">
         <navbar />
       </div>
+      <TagsView></TagsView>
       <app-main />
     </div>
   </div>

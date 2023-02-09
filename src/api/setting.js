@@ -33,3 +33,13 @@ export const editRoleDeta = data =>
     method: 'put',
     data
   })
+// 分配权限
+export const assRoleDeta = (id, permIds) =>
+  request({
+    url: `/sys/role/assignPrem`,
+    method: 'put',
+    data: {
+      id,
+      permIds
+    }
+  })

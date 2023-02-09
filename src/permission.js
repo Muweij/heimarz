@@ -2,8 +2,9 @@ import router from './router'
 import store from './store'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
+
 let whiteList = ['/login', '/404']
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   NProgress.start()
   let token = store.getters.token
   if (token) {
@@ -12,7 +13,24 @@ router.beforeEach((to, from, next) => {
       NProgress.done()
     } else {
       if (!store.state.user.userInfo.userId) {
-        store.dispatch('user/getUserInfo')
+        let { roles } = await store.dispatch('user/getUserInfo')
+        const otherRoutes = await store.dispatch(
+          'routerinfo/filterRoutes',
+          roles.menus
+        )
+        router.addRoutes([
+          ...otherRoutes,
+          {
+            path: '*',
+            redirect: '/404',
+            hidden: true
+          }
+        ])
+        next({
+          ...to,
+          replace: true
+        })
+        return
       }
       next()
     }

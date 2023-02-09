@@ -1,33 +1,46 @@
 <template>
-  <div class="navbar">
-    <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
+  <div class="navbar" :style="{ background: $store.state.settings.theme }">
+    <hamburger
+      :is-active="sidebar.opened"
+      class="hamburger-container"
+      @toggleClick="toggleSideBar"
+    />
 
     <!-- <breadcrumb class="breadcrumb-container" /> -->
     <div class="app-breadcrumb">
-      江苏传智播客教育科技股份有限公司
+      {{ $t('company') }}
       <span class="breadBtn">体验版</span>
     </div>
     <div class="right-menu">
-      <el-dropdown class="avatar-container" trigger="click">
-        <div class="avatar-wrapper">
-          <img v-imgerror="defaultImg" :src="staffPhoto" class="user-avatar" />
-          <span class="name">{{ name }}</span>
-          <i class="el-icon-caret-bottom" style="color:#fff" />
-        </div>
-        <el-dropdown-menu slot="dropdown" class="user-dropdown">
-          <router-link to="/">
-            <el-dropdown-item>
-              首页
+      <Lang class="lang"></Lang>
+      <ThemePicker class="theme" @change="changeFN"></ThemePicker>
+      <Screen-full class="full"></Screen-full>
+      <div class="right-menu">
+        <el-dropdown class="avatar-container" trigger="click">
+          <div class="avatar-wrapper">
+            <img
+              v-imgerror="defaultImg"
+              :src="staffPhoto"
+              class="user-avatar"
+            />
+            <span class="name">{{ name }}</span>
+            <i class="el-icon-caret-bottom" style="color:#fff" />
+          </div>
+          <el-dropdown-menu slot="dropdown" class="user-dropdown">
+            <router-link to="/">
+              <el-dropdown-item>
+                首页
+              </el-dropdown-item>
+            </router-link>
+            <a target="_blank" href="https://github.com/Muweij/heimarz.git">
+              <el-dropdown-item>项目地址</el-dropdown-item>
+            </a>
+            <el-dropdown-item divided @click.native="logout">
+              <span v-textcolor="'red'" style="display:block;">退出登录</span>
             </el-dropdown-item>
-          </router-link>
-          <a target="_blank" href="https://github.com/Muweij/heimarz.git">
-            <el-dropdown-item>项目地址</el-dropdown-item>
-          </a>
-          <el-dropdown-item divided @click.native="logout">
-            <span v-textcolor="'red'" style="display:block;">退出登录</span>
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div>
     </div>
   </div>
 </template>
@@ -37,6 +50,8 @@ import { mapGetters } from 'vuex'
 import Hamburger from '@/components/Hamburger'
 import defaultImg from '@/assets/common/bigUserHeader.png'
 import { imgerror, textcolor } from '@/directives'
+import ScreenFull from '@/components/ScreenFull'
+
 export default {
   data() {
     return {
@@ -48,11 +63,11 @@ export default {
     imgerror
   },
   components: {
-    Hamburger
+    Hamburger,
+    ScreenFull
   },
   computed: {
     ...mapGetters(['sidebar', 'name', 'staffPhoto'])
-
   },
   methods: {
     toggleSideBar() {
@@ -61,6 +76,12 @@ export default {
     logout() {
       this.$store.dispatch('user/logout')
       this.$router.push('/login')
+    },
+    changeFN(val) {
+      this.$store.dispatch('settings/changeSetting', {
+        key: 'theme',
+        value: val
+      })
     }
   }
 }
@@ -133,12 +154,24 @@ export default {
   .right-menu {
     float: right;
     height: 100%;
-    line-height: 50px;
+    // line-height: 50px
 
     &:focus {
       outline: none;
     }
-
+    .theme {
+      display: inline-block;
+      margin-right: 10px;
+      height: 50px;
+      line-height: 50px;
+    }
+    .full {
+      display: inline-block;
+      margin-right: 20px;
+    }
+    .lang {
+      margin-right: 10px;
+    }
     .right-menu-item {
       display: inline-block;
       padding: 0 8px;

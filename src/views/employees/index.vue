@@ -30,6 +30,17 @@
             :index="indexFn(index)"
           />
           <el-table-column label="姓名" prop="username" sortable="" />
+          <el-table-column label="头像" prop="staffPhoto" sortable="">
+            <template #default="{ row }">
+              <img
+                class="staff"
+                v-imgerror="defaultImg"
+                :src="row.staffPhoto || defaultImg"
+                @click="showDiaFN(row.staffPhoto)"
+              />
+            </template>
+          </el-table-column>
+
           <el-table-column label="手机号" prop="mobile" sortable="" />
           <el-table-column label="工号" prop="workNumber" sortable="" />
           <el-table-column
@@ -55,8 +66,17 @@
               <el-button type="text" size="small">转正</el-button>
               <el-button type="text" size="small">调岗</el-button>
               <el-button type="text" size="small">离职</el-button>
-              <el-button type="text" size="small">角色</el-button>
-              <el-button type="text" size="small" @click="del(row.id)"
+              <el-button
+                type="text"
+                size="small"
+                @click="RoleShowDialog(row.id)"
+                >角色</el-button
+              >
+              <el-button
+                type="text"
+                size="small"
+                @click="del(row.id)"
+                :disabled="!rolesBTN('USER_DEL')"
                 >删除</el-button
               >
             </template>
@@ -74,6 +94,19 @@
         </el-pagination>
       </el-card>
       <add-employee :showDialog.sync="showDialog"></add-employee>
+      <el-dialog
+        title="预览二维码"
+        :visible="Imgerweima"
+        @close="Imgerweima = false"
+      >
+        <div>
+          <canvas ref="myCanvas"></canvas>
+        </div>
+      </el-dialog>
+      <assignRole
+        :assignroleing.sync="assignroleing"
+        :userId="userId"
+      ></assignRole>
     </div>
   </div>
 </template>
@@ -83,8 +116,16 @@ import { getUserListApi, delUserListApi } from '@/api/employee'
 import obj from '@/constant/employees'
 import addEmployee from './components/add-employee.vue'
 import { formatTime } from '@/filter'
+import defaultImg from '@/assets/common/head.jpg'
+import Qrcode from 'qrcode'
+import rolesMixin from '@/mixin/rolesMixin'
+import assignRole from '@/views/employees/components/assignRole'
 export default {
-  components: { addEmployee },
+  components: {
+    addEmployee,
+    assignRole
+  },
+  mixins: [rolesMixin],
   data() {
     return {
       list: [],
@@ -93,7 +134,11 @@ export default {
       page: 1,
       pageSize: 5,
       index: 0,
-      showDialog: false
+      showDialog: false,
+      Imgerweima: false,
+      defaultImg,
+      assignroleing: false,
+      userId: ''
     }
   },
   created() {
@@ -126,6 +171,10 @@ export default {
       return result ? result.value : '未知'
     },
     del(id) {
+      if (!this.rolesBTN('USER_DEL')) {
+        this.$message.error('您没有删除权限')
+        return
+      }
       this.$confirm('此操作将永久删除该员工, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -187,7 +236,7 @@ export default {
       //创建一个一级空数组
       let arr = []
       // 对接口传递的数据进行遍历
-      rows.forEach((item, index) => {
+      rows.forEach(item => {
         //创建一个二级空数组
         let theaderarr = []
         // 对中文的表头进行遍历
@@ -199,29 +248,41 @@ export default {
           // 判断中英文对照中找到英文englishKey是否是聘用形式
           if ('formOfEmployment' === englishKey) {
             // 将请求来的数字对比常量文件夹，赋值客户能看懂的词语
-            let obj = hireType.find(
-              item => item.id === +rows[index][englishKey]
-            )
-            rows[index][englishKey] = obj ? obj.value : '未知'
+            let obj = hireType.find(ele => ele.id === +item[englishKey])
+            item[englishKey] = obj ? obj.value : '未知'
           }
           // 判断中英文对照中找到英文englishKey是否是入职日期、转正日期
           if (['timeOfEntry', 'correctionTime'].includes(englishKey)) {
             // 将请求来的时间进行时间格式化处理
-            rows[index][englishKey] = formatTime(
-              rows[index][englishKey],
-              'YYYY年MM月DD日'
-            )
+            item[englishKey] = formatTime(item[englishKey], 'YYYY年MM月DD日')
           }
           // 将处理好的数据添加二级空数组中
-          theaderarr.push(rows[index][englishKey])
+          theaderarr.push(item[englishKey])
         })
         // 将处理好的二级数组添加到一级空数组中
         arr.push(theaderarr)
       })
       return arr
+    },
+    showDiaFN(staffPhoto) {
+      // if (staffPhoto) return
+      this.Imgerweima = true
+      this.$nextTick(() => {
+        Qrcode.toCanvas(this.$refs.myCanvas, staffPhoto)
+      })
+    },
+    RoleShowDialog(userId) {
+      this.assignroleing = true
+      this.userId = userId
     }
   }
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.staff {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+</style>

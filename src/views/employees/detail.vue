@@ -32,13 +32,23 @@
               </el-form-item>
             </el-form>
           </el-tab-pane>
-          <el-tab-pane label="个人详情">
+          <el-tab-pane label="个人详情" class="employees-detail-container">
             <!-- 内容 -->
-            <user-info></user-info>
+            <el-tooltip class="tooltip-box" content="打印基本个人信息">
+              <router-link :to="`/employees/print/${userId}?type=personal`">
+                <i class="el-icon-printer" />
+              </router-link>
+            </el-tooltip>
+            <user-info class="tooltip-pane"></user-info>
           </el-tab-pane>
-          <el-tab-pane label="岗位信息">
+          <el-tab-pane label="岗位信息" class="employees-detail-container">
             <!-- 内容 -->
-            <job-info></job-info>
+            <el-tooltip class="tooltip-box" content="打印基本岗位信息">
+              <router-link :to="`/employees/print/${userId}?type=job`">
+                <i class="el-icon-printer" />
+              </router-link>
+            </el-tooltip>
+            <job-info class="tooltip-pane"></job-info>
           </el-tab-pane>
         </el-tabs>
       </el-card>
@@ -105,4 +115,16 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.employees-detail-container {
+  .el-tab-pane {
+    padding-top: 10px;
+  }
+  .tooltip-box {
+    position: absolute;
+    right: 30px;
+    top: 10px;
+    z-index: 999;
+  }
+}
+</style>

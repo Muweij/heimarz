@@ -1,4 +1,5 @@
 import { getUserInfo, login, getStaffInfo } from '@/api/user'
+import { resetRouter } from '@/router'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 const state = {
   token: getToken() || '',
@@ -39,6 +40,9 @@ const actions = {
   logout({ commit }) {
     commit('removeToken')
     commit('removeUserInfo')
+    resetRouter()
+    commit('routerinfo/setRoutes', [], { root: true })
+    commit('settings/ resetTheme', [], { root: true })
   }
 }
 const getters = {}

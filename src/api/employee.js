@@ -59,3 +59,13 @@ export const reqUodataJob = data =>
     method: 'put',
     data
   })
+// 给员工分配角色
+export const editAssignRolesAPi = (id, roleIds) =>
+  request({
+    url: `/sys/user/assignRoles`,
+    method: 'put',
+    data: {
+      id,
+      roleIds
+    }
+  })

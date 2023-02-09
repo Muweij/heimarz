@@ -57,6 +57,7 @@
         <el-col :span="12">
           <el-form-item label="员工头像">
             <!-- 放置上传图片 -->
+            <ImageUpload :limitNum="1" ref="staffPhoto"></ImageUpload>
           </el-form-item>
         </el-col>
       </el-row>
@@ -89,6 +90,7 @@
         <!-- 员工照片 -->
 
         <el-form-item label="员工照片">
+          <ImageUpload :limitNum="3" ref="employeePhoto"></ImageUpload>
           <!-- 放置上传图片 -->
         </el-form-item>
         <el-form-item label="国家/地区">
@@ -400,7 +402,8 @@ export default {
         username: '', // 姓名
         departmentName: '', // 部门
         mobile: '', // 手机
-        formOfEmployment: '' // 聘用形式
+        formOfEmployment: '', // 聘用形式
+        staffPhoto: ''
       },
       formData: {
         userId: '',
@@ -478,19 +481,71 @@ export default {
   },
   methods: {
     async saveUser() {
-      await appUserListApi(this.userInfo)
+      const staffPhotoRef = this.$refs.staffPhoto
+      const fileList = staffPhotoRef.fileList
+      const uploadAllSuccess = staffPhotoRef.uploadAllSuccess
+      // if (!uploadAllSuccess) {
+      //   this.$message.error('当前有文件未上传完成')
+      //   return
+      // }
+      // if (!fileList[0]) {
+      //   this.$message.error('请上传员工头像')
+      //   return
+      // }
+      let arr = []
+      fileList.forEach(item => {
+        arr.push(item.url)
+      })
+      let staffPhoto = arr.join(',')
+      await appUserListApi({
+        ...this.userInfo,
+        staffPhoto: staffPhoto
+      })
+      console.log(staffPhoto)
       this.$message.success('保存成功')
     },
     async savePersonal() {
-      await reqUpdataPersonal({ ...this.formData, userId: this.userId })
+      const staffPhotoRef = this.$refs.employeePhoto
+      const fileList = staffPhotoRef.fileList
+      const uploadAllSuccess = staffPhotoRef.uploadAllSuccess
+      // if (!uploadAllSuccess) {
+      //   this.$message.error('当前有文件未上传完成')
+      //   return
+      // }
+      // if (!fileList[0]) {
+      //   this.$message.error('请上传员工照片')
+      //   return
+      // }
+      let arr = []
+      fileList.forEach(item => {
+        arr.push(item.url)
+      })
+      let staffPhoto = arr.join(',')
+      await reqUpdataPersonal({
+        ...this.formData,
+        userId: this.userId,
+        staffPhoto
+      })
       this.$message.success('保存成功')
     },
     async getUserDetailById() {
       const { data } = await getStaffInfo(this.userId)
+      this.$refs.staffPhoto.fileList = [{ url: data.staffPhoto }]
       this.userInfo = data
     },
     async getPersonalDetail() {
       const { data } = await reqGetPersonalDetail(this.userId)
+      let Arr = []
+      if (data.staffPhoto) {
+        let arr = data.staffPhoto.split(',')
+        arr.forEach(item => {
+          let obj = {}
+          obj.url = item
+          Arr.push(obj)
+        })
+      }
+
+      this.$refs.employeePhoto.fileList = Arr
       this.formData = data
     }
   }

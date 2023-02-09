@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="showTitle"
+    :title="showTitle"
     :visible="dialogVisible"
     width="30%"
     @open="handleopen"
@@ -48,16 +48,26 @@
     </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button>取 消</el-button>
-        <el-button type="primary">确 定</el-button>
+        <el-button @click="handleClose()">取 消</el-button>
+        <el-button type="primary" @click="add()">确 定</el-button>
       </span>
     </template>
   </el-dialog>
 </template>
 
 <script>
+import { getSimpleList } from '@/api/user'
+import {
+  addDepartments,
+  getDepartmentsdetails,
+  putDepartments
+} from '@/api/department'
 export default {
-  computed: {},
+  computed: {
+    showTitle() {
+      return this.form.id ? '编辑部门' : '新增部门'
+    }
+  },
   props: {
     objnode: {
       type: Object
@@ -65,11 +75,42 @@ export default {
     dialogVisible: {
       type: Boolean,
       default: false
+    },
+    origindeparts: {
+      type: Array
     }
   },
   data() {
-    let checkNameRepeat = (rule, value, callback) => {}
-    let checkCodeRepeat = (rule, value, callback) => {}
+    let checkNameRepeat = (rule, value, callback) => {
+      let arr = []
+      if (this.form.id) {
+        if (this.objnode.name === value) {
+          callback()
+          return
+        }
+        arr = this.origindeparts.filter(item => item.pid === this.objnode.pid)
+      } else {
+        arr = this.origindeparts.filter(item => item.pid === this.objnode.id)
+      }
+      let isRepeast = arr.some(item => item.name === value)
+      if (isRepeast) {
+        callback(new Error('出现相同部门'))
+      } else {
+        callback()
+      }
+    }
+    let checkCodeRepeat = (rule, value, callback) => {
+      if (this.form.id && this.objnode.code === value) {
+        callback()
+        return
+      }
+      let isRepeast = this.origindeparts.some(item => item.code === value)
+      if (isRepeast) {
+        callback(new Error('出现相同部门编码'))
+      } else {
+        callback()
+      }
+    }
     return {
       userList: [],
       nodeData: {},
@@ -146,8 +187,35 @@ export default {
         manager: '', // 部门管理者
         introduce: '' // 部门介绍
       }
+      this.$emit('update:dialogVisible', false)
     },
-    handleopen() {}
+    async handleopen() {
+      let { data } = await getSimpleList()
+      this.userList = data
+    },
+    add() {
+      this.$refs.deptForm.validate(async valid => {
+        if (!valid) return
+        if (this.form.id) {
+          await putDepartments(this.form)
+          this.$message.success('编辑部门成功')
+        } else {
+          let data = {
+            ...this.form,
+            pid: this.objnode.id
+          }
+          await addDepartments(data)
+          this.$message.success('新增部门成功')
+        }
+
+        this.handleClose()
+        this.$emit('adddept')
+      })
+    },
+    async getDepartmentsDeatails(id) {
+      let { data } = await getDepartmentsdetails(id)
+      this.form = data
+    }
   }
 }
 </script>

@@ -12,6 +12,8 @@
             <treeTools
               :company="data"
               @opendialogVisible="openDialog"
+              @editialogVisible="editialog"
+              @delDepartments="getDepartmentsList()"
             ></treeTools>
           </template>
         </el-tree>
@@ -20,6 +22,8 @@
         ref="addDept"
         :objnode="objnode"
         :dialogVisible.sync="dialogVisible"
+        :origindeparts="origindeparts"
+        @adddept="getDepartmentsList()"
       ></addDeptVue>
     </div>
   </div>
@@ -80,6 +84,13 @@ export default {
     openDialog(data) {
       this.dialogVisible = true
       this.objnode = data
+    },
+    editialog(treeNode) {
+      this.dialogVisible = true
+      this.objnode = treeNode
+      this.$nextTick(() => {
+        this.$refs.addDept.getDepartmentsDeatails(this.objnode.id)
+      })
     }
   },
   created() {

@@ -55,6 +55,7 @@ export default {
       }
       //   删除
       if (command === 'del') {
+        console.log(this.company.id)
         this.$confirm('此操作将永久删除该部门, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',

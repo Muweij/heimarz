@@ -4,9 +4,19 @@
       <el-card class="box-card" v-loading="loading">
         <el-tabs v-model="activeName">
           <el-tab-pane label="角色管理" name="role">
-            <el-button type="primary" size="medium" @click="dialogVisible = true">新增角色</el-button>
+            <el-button
+              type="primary"
+              size="medium"
+              @click="dialogVisible = true"
+              >新增角色</el-button
+            >
             <el-table :data="tableData" style="width: 100%">
-              <el-table-column type="index" label="序号" width="180" :index="indexFn(index)">
+              <el-table-column
+                type="index"
+                label="序号"
+                width="180"
+                :index="indexFn(index)"
+              >
               </el-table-column>
               <el-table-column prop="name" label="名称" width="180">
               </el-table-column>
@@ -14,45 +24,92 @@
               </el-table-column>
               <el-table-column label="操作">
                 <template #default="{ row }">
-                  <el-button type="success" size="medium">分配权限</el-button>
-                  <el-button type="primary" size="medium" @click="editRoleDetails(row.id)">编辑</el-button>
-                  <el-button type="danger" size="medium" @click="del(row.id)">删除</el-button>
+                  <el-button
+                    type="success"
+                    size="medium"
+                    @click="clickShowAssignDialog(row.id)"
+                    >分配权限</el-button
+                  >
+                  <el-button
+                    type="primary"
+                    size="medium"
+                    @click="editRoleDetails(row.id)"
+                    >编辑</el-button
+                  >
+                  <el-button type="danger" size="medium" @click="del(row.id)"
+                    >删除</el-button
+                  >
                 </template>
               </el-table-column>
             </el-table>
-            <el-pagination @size-change="handleSizeChange" @current-change="currentChange" :current-page="page"
-              :page-sizes="[1, 2, 3, 4, 5]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
-              :total="total">
+            <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="currentChange"
+              :current-page="page"
+              :page-sizes="[1, 2, 3, 4, 5]"
+              :page-size="pageSize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="total"
+            >
             </el-pagination>
           </el-tab-pane>
           <el-tab-pane label="公司信息" name="company">
-            <el-alert title="对公司名称、公司地址、营业执照、公司地区的更新，将使得公司资料被重新审核，请谨慎修改" type="info" show-icon :closable="false" />
+            <el-alert
+              title="对公司名称、公司地址、营业执照、公司地区的更新，将使得公司资料被重新审核，请谨慎修改"
+              type="info"
+              show-icon
+              :closable="false"
+            />
             <!-- 表单 -->
             <el-form label-width="120px" style="margin-top:50px">
               <el-form-item label="公司名称">
-                <el-input v-model="companyForm.name" disabled style="width:400px" />
+                <el-input
+                  v-model="companyForm.name"
+                  disabled
+                  style="width:400px"
+                />
               </el-form-item>
               <el-form-item label="公司地址">
-                <el-input v-model="companyForm.companyAddress" disabled style="width:400px" />
+                <el-input
+                  v-model="companyForm.companyAddress"
+                  disabled
+                  style="width:400px"
+                />
               </el-form-item>
               <el-form-item label="邮箱">
-                <el-input v-model="companyForm.mailbox" disabled style="width:400px" />
+                <el-input
+                  v-model="companyForm.mailbox"
+                  disabled
+                  style="width:400px"
+                />
               </el-form-item>
               <el-form-item label="备注">
-                <el-input v-model="companyForm.remarks" type="textarea" :rows="3" disabled style="width:400px" />
+                <el-input
+                  v-model="companyForm.remarks"
+                  type="textarea"
+                  :rows="3"
+                  disabled
+                  style="width:400px"
+                />
               </el-form-item>
             </el-form>
-
           </el-tab-pane>
         </el-tabs>
       </el-card>
-      <el-dialog :title="showTitle" :visible="dialogVisible" @close="closeDialog()">
+      <el-dialog
+        :title="showTitle"
+        :visible="dialogVisible"
+        @close="closeDialog()"
+      >
         <el-form ref="roleForm" :model="form" label-width="80px" :rules="rules">
           <el-form-item label="角色名称" prop="name">
             <el-input v-model="form.name" placeholder="1-50个字符"></el-input>
           </el-form-item>
           <el-form-item label="角色描述" prop="description">
-            <el-input v-model="form.description" placeholder="1-50个字符"></el-input>
+            <el-input
+              v-model="form.description"
+              placeholder="1-50个字符"
+            ></el-input>
           </el-form-item>
         </el-form>
         <template #footer>
@@ -60,13 +117,45 @@
           <el-button type="primary" @click="submitRole()">确 定</el-button>
         </template>
       </el-dialog>
+      <el-dialog
+        title="分配权限"
+        :visible="showAssignDialog"
+        @close="closeAssignDialog"
+        @open="openAssignDialog"
+      >
+        <el-tree
+          :data="permissionData"
+          :props="{ label: 'name' }"
+          :show-checkbox="true"
+          :default-expand-all="true"
+          :check-strictly="true"
+          node-key="id"
+          ref="permiss"
+        >
+        </el-tree>
+        <template #footer>
+          <div style="text-align: right;">
+            <el-button @click="closeAssignDialog">取消</el-button>
+            <el-button type="primary" @click="addAssignDialog">确定</el-button>
+          </div>
+        </template>
+      </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
-import { getRoleList, delRole, addRole, getdelRole, editRoleDeta } from '@/api/setting'
+import {
+  getRoleList,
+  delRole,
+  addRole,
+  getdelRole,
+  editRoleDeta,
+  assRoleDeta
+} from '@/api/setting'
 import { getCompany } from '@/api/company'
+import { reqGetPermissionList } from '@/api/permission'
+import { recursionDepartsFn } from '@/utils'
 export default {
   data() {
     return {
@@ -79,28 +168,29 @@ export default {
       loading: true,
       showTitle: '新增角色',
       dialogVisible: false,
+      showAssignDialog: false,
+      permissionData: [],
+      roleId: '',
       form: {
         name: '',
         description: ''
       },
-      companyForm: {
-
-      },
+      companyForm: {},
       rules: {
-        name: [{
-
-          required: true,
-          message: '角色名称不能为空',
-          trigger: ['blur', 'change']
-
-        }],
-        description: [{
-
-          required: true,
-          message: '角色描述不能为空',
-          trigger: ['blur', 'change']
-
-        }]
+        name: [
+          {
+            required: true,
+            message: '角色名称不能为空',
+            trigger: ['blur', 'change']
+          }
+        ],
+        description: [
+          {
+            required: true,
+            message: '角色描述不能为空',
+            trigger: ['blur', 'change']
+          }
+        ]
       }
     }
   },
@@ -176,6 +266,25 @@ export default {
       this.dialogVisible = true
       let { data } = await getdelRole(id)
       this.form = data
+    },
+    closeAssignDialog() {
+      this.showAssignDialog = false
+      this.$refs.permiss.setCheckedKeys([])
+    },
+    clickShowAssignDialog(id) {
+      this.roleId = id
+      this.showAssignDialog = true
+    },
+    async openAssignDialog() {
+      let { data: data1 } = await reqGetPermissionList()
+      this.permissionData = recursionDepartsFn(data1, '0')
+      let { data: data2 } = await getdelRole(this.roleId)
+      this.$refs.permiss.setCheckedKeys(data2.permIds)
+    },
+    async addAssignDialog() {
+      let roleIdsArr = this.$refs.permiss.getCheckedKeys()
+      await assRoleDeta(this.roleId, roleIdsArr)
+      this.closeAssignDialog()
     }
   }
 }

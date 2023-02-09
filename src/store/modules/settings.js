@@ -1,11 +1,13 @@
 import defaultSettings from '@/settings'
-
+import Cookies from 'js-cookie'
 const { showSettings, fixedHeader, sidebarLogo } = defaultSettings
-
+const themeKey = 'hm-hrsaas-theme-color'
+const themeDefaultColor = '#409eff'
 const state = {
   showSettings: showSettings,
   fixedHeader: fixedHeader,
-  sidebarLogo: sidebarLogo
+  sidebarLogo: sidebarLogo,
+  theme: Cookies.get(themeKey) || themeDefaultColor
 }
 
 const mutations = {
@@ -14,6 +16,13 @@ const mutations = {
     if (state.hasOwnProperty(key)) {
       state[key] = value
     }
+    if (key === 'theme') {
+      Cookies.set(themeKey, value)
+    }
+  },
+  resetTheme(state) {
+    state.theme = themeDefaultColor
+    Cookies.remove(themeKey)
   }
 }
 
@@ -29,4 +38,3 @@ export default {
   mutations,
   actions
 }
-

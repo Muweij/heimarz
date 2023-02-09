@@ -2,16 +2,29 @@
   <div class="departments-container">
     <div class="app-container">
       <el-card class="tree-card" v-loading="loading">
-        <treeTools :treeNode="company" :is-root="true" @opendialogVisible="openDialog"></treeTools>
+        <treeTools
+          :treeNode="company"
+          :is-root="true"
+          @opendialogVisible="openDialog"
+        ></treeTools>
         <el-tree :data="departs" :props="defaultProps">
           <template #default="{ data }">
-            <treeTools :treeNode="data" @delDepartments="getDepartmentsList()" @opendialogVisible="openDialog"
-              @editialogVisible="editialog"></treeTools>
+            <treeTools
+              :treeNode="data"
+              @delDepartments="getDepartmentsList()"
+              @opendialogVisible="openDialog"
+              @editialogVisible="editialog"
+            ></treeTools>
           </template>
         </el-tree>
       </el-card>
-      <addDeptVue ref="addDept" :dialogVisible.sync="dialogVisible" :origindeparts="origindeparts" :objnode="objnode"
-        @adddept="getDepartmentsList()"></addDeptVue>
+      <addDeptVue
+        ref="addDept"
+        :dialogVisible.sync="dialogVisible"
+        :origindeparts="origindeparts"
+        :objnode="objnode"
+        @adddept="getDepartmentsList()"
+      ></addDeptVue>
     </div>
   </div>
 </template>
@@ -80,7 +93,6 @@ export default {
 
 .el-tree {
   ::v-deep {
-
     // 小三角的样式, 去掉默认的小三角的旋转效果
     .el-tree-node__expand-icon.expanded {
       -webkit-transform: rotate(0deg);
